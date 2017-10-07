@@ -1,0 +1,143 @@
+<html>
+	<head>
+		<script src="../js/angular.min.js" ></script>
+		<link rel="stylesheet" type="text/css" href="../css/app.css">
+		<link rel="stylesheet" type="text/css"  href="../css/font-awesome.min.css"/>
+		
+	</head>
+<body ng-app="userModule" ng-controller="userCtrl"> 
+	<div class="layout12">
+		<div class="layout2"></div>
+		<div class="layout4">
+			<div class="panel panel-info">
+			    <div class="panel-heading">
+				  Sample Form
+				</div>
+				<form name="empForm" no-validate>
+				    <div class="form-group">
+						<div>
+							<input type="text" placeholder="Name" name="ename" ng-pattern="/^[a-zA-Z.\s]{4,40}$/" class="form-input" ng-model="user.Name" required>
+						</div>
+						<span class="error-msg" ng-if="empForm.ename.$dirty && empForm.ename.$error.required">Name is required</span>
+						<span class="error-msg" ng-show="empForm.ename.$error.pattern">*Enter characters only</span>
+					</div>
+					<div class="form-group">
+						<div>
+							<input type="text" placeholder="Mobile" name="emobile" ng-pattern="/^[0-9]{10,10}$/" class="form-input" ng-model="user.Mobile" required>
+						</div>
+						<span class="error-msg" ng-if="empForm.emobile.$dirty && empForm.emobile.$error.required">Mobile number is required</span>
+						<span class="error-msg" ng-show="empForm.emobile.$error.pattern">*Enter 10 digts mobile Number</span>
+					</div>
+					<div class="form-group">
+						<div>
+							<input type="text" placeholder="Email" name="email" ng-pattern="/^[a-z]+[a-z0-9._-]+@[a-z]+\.[a-z]{2,5}$/" class="form-input" ng-model="user.Email" required>
+						</div>
+						<span class="error-msg" ng-if="empForm.email.$dirty && empForm.email.$error.required">Email is Required</span>
+						<span class="error-msg" ng-show="empForm.email.$error.pattern">*Invalid Email</span>
+					</div>
+								
+					<div class="form-group">
+						<div >
+							<button type="button" class="btn btn-info" ng-if="editIndex==expression"  ng-click="saveUser()" ng-disabled="empForm.$invalid">Save</button>
+                            <button type="button" class="btn btn-success" ng-if="editIndex!=expression" ng-click="updateUser()" ng-disabled="empForm.$invalid">Update</button>							
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="layout4">
+			<div class="card">
+			<table>
+				<tr>
+				    <th>S.No</th> 
+					<th>Name</th>
+					<th>Mobile</th>
+					<th>Email</th>
+					<th  colspan="2">Actions</th>
+				</tr>
+				<tr ng-repeat="user in users">
+				    <td>{{$index+1}}</td> 
+					<td>{{user.Name}}</td>
+					<td>{{user.Mobile}}</td>
+					<td>{{user.Email}}</td>
+				    <td><button type="button" class="btn btn-info" ng-click="editUser($index)">
+					    <span><i class="fa fa-pencil"></i></span></button></td>
+						
+                    <td><button type="button" class="btn btn-danger" ng-click="deleteConfirm()">
+						<span><i class="fa fa-trash"></i></span></button></td>
+				</tr>
+			</table>
+			</div>
+		</div>
+	</div>
+	<!--{{empForm.ename}}
+	
+	{{empForm.emobile}}
+	
+	{{empForm.email}}-->
+	
+	<!-- popup -->
+	<div class="overlay" ng-class="{'show':showPopup}"></div>
+	<div class="popup" ng-class="{'show':showPopup}">
+		<div class="popup-text">
+		   Confirm Delete
+			<div>
+			    <button type="button" class="btn btn-success" ng-click="deleteUser()">Yes</button>
+			    <button type="button" class="btn btn-info" ng-click="closePopup()">No</button>
+			</div>
+            <a href="#" class="close-icon" ng-click="closePopup()"><span><i class="fa fa-times-circle-o"></i></span></a>			
+		</div>
+	</div>
+    	
+    <!--<div ng-repeat="user in users">
+		<div>{{user.Name}} </div>
+        <div>{{user.Mobile}}</div>
+        <div>{{user.Email}}</div>		
+    </div> -->
+	<script>
+	 var app=angular.module('userModule',[]);
+
+		 app.controller('userCtrl',function($scope){
+		 
+		$scope.index = 0;
+		 
+		 $scope.users =[
+		      {"Name":"AAAA","Mobile":9898989898,"Email":"sample@gmail.com"},
+			  {"Name":"BBBB","Mobile":7878787878,"Email":"sample2@gmail.com"},
+			  {"Name":"CCCC","Mobile":6767676767,"Email":"sample3@gmail.com"},
+			  {"Name":"DDD","Mobile":848484,"Email":"sample4@gmail"}
+		 ];
+		
+		 $scope.saveUser=function(){
+		     $scope.users.push($scope.user);
+		     $scope.user={};
+			 $scope.empForm.$setPristine();
+		 }
+		 $scope.editUser=function(index){
+			$scope.user=angular.copy($scope.users[index]);
+			$scope.editIndex=index;	
+		 }
+		 
+		 $scope.updateUser=function(){
+			$scope.users[$scope.editIndex]=$scope.user;
+			$scope.user={};
+			$scope.empForm.$setPristine();
+			
+		 }
+		 $scope.deleteUser=function($index){
+			$scope.users.splice($index,1);
+			$scope.closePopup();
+		 }
+		 $scope.deleteConfirm=function(){
+		     $scope.openPopup();
+		 }
+		 $scope.openPopup=function(){
+		     $scope.showPopup=true; 
+		 }
+		 $scope.closePopup=function(){
+		     $scope.showPopup=false; 
+		 }
+		});
+	</script>
+</body>
+</html>
